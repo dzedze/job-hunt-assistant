@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "job-hunt-assistant"
 version = "0.1.0"
@@ -5,6 +9,10 @@ description = "AI-powered job hunt assistant that helps users find and apply for
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["backend*"]
 
 [project.optional-dependencies]
 dev = [
