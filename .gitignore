@@ -1,0 +1,37 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.deepeval_telemetry.txt
+.DS_Store
+**/.deepeval/*
+.coverage
+
+# Virtual environments
+.venv
+# uv.lock
+deploying-ai-env
+
+# Secrets
+*.secrets
+*.secrets_*
+
+
+# Logs
+*.log
+
+# documents
+*.sqlite
+*.jsonl
+*.htm
+*.txt
+
+# data
+data/processed/*
+data/raw/*
+data/vector/*
+!data/.keep
+data/*
