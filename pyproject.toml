@@ -20,7 +20,12 @@ dev = [
     "black",
     "ruff",
     "mypy",
-    "bandit"
+    "bandit",
+]
+
+test = [
+    "pytest",
+    "pytest-cov"
 ]
 
 [tool.ruff]
@@ -37,3 +42,14 @@ ignore_missing_imports = true
 [tool.bandit]
 exclude_dirs = [".venv", "__pycache__", "build", "dist"]
 skips = ["B101"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --strict-markers --tb=short"
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+]
