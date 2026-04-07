@@ -15,6 +15,7 @@ dependencies = [
     "crewai>=1.13.0",
     "langchain>=1.2.15",
     "pypdf>=4.0.0",
+    "streamlit>=1.56.0",
 ]
 
 [project.scripts]
@@ -50,7 +51,7 @@ line-length = 68
 warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
-install_types = true
+install_types = false
 exclude = 'dist|\.venv|build'
 
 [tool.bandit]

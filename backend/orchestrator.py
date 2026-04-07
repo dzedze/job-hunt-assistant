@@ -15,7 +15,8 @@ from backend.agents.messaging_agent import (
 )
 
 from backend.utils import config as cfg
-from backend.apis.jobs_api import fetch_jobs
+
+# from backend.apis.jobs_api import fetch_jobs
 
 
 def load_resume(path=cfg.RESUME_PATH):
@@ -34,15 +35,15 @@ def load_resume(path=cfg.RESUME_PATH):
         return ""
 
 
-def run_pipeline():
-    # Fetch jobs posts
-    job_posts = fetch_jobs("Data Scientist", "Toronto")
-    if not job_posts:
-        print("No job posts found. Exiting pipeline.")
-        return
+def run_pipeline(job_data=None, resume_text=None, user_bio=None):
+    # # Fetch jobs posts
+    # job_posts = fetch_jobs("Data Scientist", "Toronto")
+    # if not job_posts:
+    #     print("No job posts found. Exiting pipeline.")
+    #     return
 
-    # Extract job description from the first result
-    job_data = job_posts[0]
+    # # Extract job description from the first result
+    # job_data = job_posts[0]
     job_description = job_data.get("description", "")
     # print(job_description)
     if not job_description:
@@ -54,11 +55,11 @@ def run_pipeline():
     agency_name = job_data.get("company", "the company")
     job_title = job_data.get("title", "the role")
 
-    # Load resume & user bio
-    resume_text = load_resume()
-    user_bio = """
-    Data science professional with 7+ years of software engineering experience building scalable, production-grade systems. Seeking Data Scientist or Machine Learning Engineer or AI Engineer roles to deliver scalable, data-driven business impact
-    """
+    # # Load resume & user bio
+    # resume_text = load_resume()
+    # user_bio = """
+    # Data science professional with 7+ years of software engineering experience building scalable, production-grade systems. Seeking Data Scientist or Machine Learning Engineer or AI Engineer roles to deliver scalable, data-driven business impact
+    # """
     # Initialize agents
     jd_agent = get_jd_analyst_agent()
     resume_agent = get_resume_cl_agent()
@@ -87,9 +88,10 @@ def run_pipeline():
 
     results = crew.kickoff()
 
-    print("\n=== FINAL OUTPUT ===\n")
-    print(results)
+    # print("\n=== FINAL OUTPUT ===\n")
+    # print(results)
+    return results
 
 
-if __name__ == "__main__":
-    run_pipeline()
+# if __name__ == "__main__":
+# run_pipeline()

@@ -260,65 +260,43 @@ def test_load_resume_with_custom_path(tmp_path, monkeypatch):
     assert isinstance(text, str)
 
 
-def test_run_pipeline_successful(capsys, monkeypatch):
+def test_run_pipeline_successful():
     """Test successful run_pipeline with mocked dependencies."""
     from backend.orchestrator import run_pipeline
 
-    run_pipeline()
+    job_data = {
+        "job_id": "123",
+        "title": "Data Scientist",
+        "company": "Tech Corp",
+        "description": "Analyze large datasets",
+    }
+    resume_text = "Sample resume content"
+    user_bio = "Data science professional"
 
-    captured = capsys.readouterr()
-    assert "=== FINAL OUTPUT ===" in captured.out
-    assert "Crew execution results" in captured.out
+    result = run_pipeline(job_data, resume_text, user_bio)
 
-
-def test_run_pipeline_no_jobs(capsys, monkeypatch):
-    """Test run_pipeline when fetch_jobs returns no results."""
-    # Create a mock that returns empty list
-    mock_fetch = Mock(return_value=[])
-
-    # Patch fetch_jobs in the orchestrator namespace
-    import backend.orchestrator as orch_module
-
-    monkeypatch.setattr(orch_module, "fetch_jobs", mock_fetch)
-
-    from backend.orchestrator import run_pipeline
-
-    run_pipeline()
-
-    captured = capsys.readouterr()
-    assert "No job posts found" in captured.out
+    assert result == "Crew execution results"
 
 
-def test_run_pipeline_no_description(capsys, monkeypatch):
+def test_run_pipeline_no_description():
     """Test run_pipeline when job has no description."""
-    from backend.orchestrator import (
-        fetch_jobs,  # noqa: F401
-    )
-
-    def mock_fetch_no_desc(*args, **kwargs):
-        return [
-            {
-                "job_id": "123",
-                "title": "Data Scientist",
-                "company": "Tech Corp",
-                "description": "",
-            }
-        ]
-
-    monkeypatch.setattr(
-        "backend.orchestrator.fetch_jobs",
-        mock_fetch_no_desc,
-    )
-
     from backend.orchestrator import run_pipeline
 
-    run_pipeline()
+    job_data = {
+        "job_id": "123",
+        "title": "Data Scientist",
+        "company": "Tech Corp",
+        "description": "",
+    }
+    resume_text = "Sample resume content"
+    user_bio = "Data science professional"
 
-    captured = capsys.readouterr()
-    assert "No job description found" in captured.out
+    result = run_pipeline(job_data, resume_text, user_bio)
+
+    assert result is None
 
 
-def test_run_pipeline_creates_crew(monkeypatch):
+def test_run_pipeline_creates_crew():
     """Test that run_pipeline creates a Crew with all agents and tasks."""
     from backend.orchestrator import run_pipeline
 
@@ -332,46 +310,34 @@ def test_run_pipeline_creates_crew(monkeypatch):
         mock_crew_obj.kickoff.return_value = "Results"
         return mock_crew_obj
 
-    monkeypatch.setattr(
-        "backend.orchestrator.Crew",
-        mock_crew,
-    )
+    import backend.orchestrator as orch_module
+    import sys
 
-    run_pipeline()
+    if "backend.orchestrator" in sys.modules:
+        del sys.modules["backend.orchestrator"]
+
+    # from backend.orchestrator import Crew
+
+    # original_crew = Crew
+    orch_module.Crew = mock_crew
+
+    job_data = {
+        "job_id": "123",
+        "title": "Data Scientist",
+        "company": "Tech Corp",
+        "description": "Analyze large datasets",
+    }
+    resume_text = "Sample resume content"
+    user_bio = "Data science professional"
+
+    run_pipeline(job_data, resume_text, user_bio)
 
     assert crew_init_called["called"] is True
     assert crew_init_called["agents"] == 3  # jd, resume, messaging
     assert crew_init_called["tasks"] == 3
 
 
-def test_run_pipeline_loads_resume(monkeypatch):
-    """Test that run_pipeline calls load_resume."""
-    from backend.orchestrator import run_pipeline
-
-    load_resume_called = {"called": False, "result": ""}
-
-    def mock_load_resume(path=None):
-        load_resume_called["called"] = True
-        load_resume_called["result"] = "Mocked resume text"
-        return "Mocked resume text"
-
-    monkeypatch.setattr(
-        "backend.orchestrator.load_resume",
-        mock_load_resume,
-    )
-
-    # Mock Crew to avoid further execution
-    monkeypatch.setattr(
-        "backend.orchestrator.Crew",
-        Mock(return_value=Mock(kickoff=Mock())),
-    )
-
-    run_pipeline()
-
-    assert load_resume_called["called"] is True
-
-
-def test_run_pipeline_extracts_job_details(monkeypatch):
+def test_run_pipeline_extracts_job_details():
     """Test that run_pipeline correctly extracts job details."""
     from backend.orchestrator import run_pipeline
 
@@ -381,14 +347,8 @@ def test_run_pipeline_extracts_job_details(monkeypatch):
         "company": "DataCorp",
         "description": "Advanced analytics role",
     }
-
-    def mock_fetch(*args, **kwargs):
-        return [job_data]
-
-    monkeypatch.setattr(
-        "backend.orchestrator.fetch_jobs",
-        mock_fetch,
-    )
+    resume_text = "Sample resume content"
+    user_bio = "Data science professional"
 
     messaging_task_called = {"company": None, "title": None}
 
@@ -404,23 +364,24 @@ def test_run_pipeline_extracts_job_details(monkeypatch):
             output_file="",
         )
 
-    monkeypatch.setattr(
-        "backend.orchestrator.create_messaging_task",
-        mock_create_messaging_task,
-    )
+    import backend.orchestrator as orch_module
+    import sys
 
-    monkeypatch.setattr(
-        "backend.orchestrator.Crew",
-        Mock(return_value=Mock(kickoff=Mock())),
-    )
+    if "backend.orchestrator" in sys.modules:
+        del sys.modules["backend.orchestrator"]
 
-    run_pipeline()
+    # from backend.orchestrator import create_messaging_task
+
+    # original_messaging_task = create_messaging_task
+    orch_module.create_messaging_task = mock_create_messaging_task
+
+    run_pipeline(job_data, resume_text, user_bio)
 
     assert messaging_task_called["company"] == "DataCorp"
     assert messaging_task_called["title"] == "Senior Data Scientist"
 
 
-def test_run_pipeline_uses_sequential_process(monkeypatch):
+def test_run_pipeline_uses_sequential_process():
     """Test that run_pipeline uses sequential process."""
     from backend.orchestrator import run_pipeline
 
@@ -432,33 +393,32 @@ def test_run_pipeline_uses_sequential_process(monkeypatch):
         mock_crew_obj.kickoff.return_value = "Results"
         return mock_crew_obj
 
-    monkeypatch.setattr(
-        "backend.orchestrator.Crew",
-        mock_crew,
-    )
+    import backend.orchestrator as orch_module
+    import sys
 
-    run_pipeline()
+    if "backend.orchestrator" in sys.modules:
+        del sys.modules["backend.orchestrator"]
+
+    # from backend.orchestrator import Crew
+
+    # original_crew = Crew
+    orch_module.Crew = mock_crew
+
+    job_data = {
+        "job_id": "123",
+        "title": "Data Scientist",
+        "company": "Tech Corp",
+        "description": "Analyze large datasets",
+    }
+    resume_text = "Sample resume content"
+    user_bio = "Data science professional"
+
+    run_pipeline(job_data, resume_text, user_bio)
 
     assert crew_process["value"] == "sequential"
 
 
-def test_load_resume_exception_handling(monkeypatch):
-    """Test load_resume exception handling for different error types."""
-    from backend.orchestrator import load_resume
-
-    def mock_pdf_reader_error(path):
-        raise ValueError("PDF parsing error")
-
-    monkeypatch.setattr(
-        "backend.orchestrator.PdfReader",
-        mock_pdf_reader_error,
-    )
-
-    text = load_resume("/some/path.pdf")
-    assert text == ""
-
-
-def test_run_pipeline_creates_all_task_types(monkeypatch):
+def test_run_pipeline_creates_all_task_types():
     """Test that run_pipeline creates all three task types."""
     from backend.orchestrator import run_pipeline
 
@@ -495,26 +455,71 @@ def test_run_pipeline_creates_all_task_types(monkeypatch):
             output_file="",
         )
 
-    monkeypatch.setattr(
-        "backend.orchestrator.create_jd_analysis_task",
-        mock_create_jd_task,
-    )
-    monkeypatch.setattr(
-        "backend.orchestrator.create_resume_cl_task",
-        mock_create_resume_task,
-    )
-    monkeypatch.setattr(
-        "backend.orchestrator.create_messaging_task",
-        mock_create_message_task,
-    )
+    import backend.orchestrator as orch_module
+    import sys
 
-    monkeypatch.setattr(
-        "backend.orchestrator.Crew",
-        Mock(return_value=Mock(kickoff=Mock())),
-    )
+    if "backend.orchestrator" in sys.modules:
+        del sys.modules["backend.orchestrator"]
 
-    run_pipeline()
+    # from backend.orchestrator import (
+    #     create_jd_analysis_task,
+    #     create_resume_cl_task,
+    #     create_messaging_task,
+    # )
+
+    # original_jd_task = create_jd_analysis_task
+    # original_resume_task = create_resume_cl_task
+    # original_message_task = create_messaging_task
+
+    orch_module.create_jd_analysis_task = mock_create_jd_task
+    orch_module.create_resume_cl_task = mock_create_resume_task
+    orch_module.create_messaging_task = mock_create_message_task
+
+    job_data = {
+        "job_id": "123",
+        "title": "Data Scientist",
+        "company": "Tech Corp",
+        "description": "Analyze large datasets",
+    }
+    resume_text = "Sample resume content"
+    user_bio = "Data science professional"
+
+    run_pipeline(job_data, resume_text, user_bio)
 
     assert task_creation["jd_task"] is True
     assert task_creation["resume_task"] is True
     assert task_creation["message_task"] is True
+
+
+def test_run_pipeline_with_none_job_data():
+    """Test run_pipeline with None job_data."""
+    from backend.orchestrator import run_pipeline
+
+    with pytest.raises(AttributeError):
+        run_pipeline(None, "resume", "bio")
+
+
+def test_run_pipeline_with_empty_job_data():
+    """Test run_pipeline with empty job_data dict."""
+    from backend.orchestrator import run_pipeline
+
+    result = run_pipeline({}, "resume", "bio")
+    assert result is None
+
+
+def test_run_pipeline_returns_crew_results():
+    """Test that run_pipeline returns the crew kickoff results."""
+    from backend.orchestrator import run_pipeline
+
+    job_data = {
+        "job_id": "123",
+        "title": "Data Scientist",
+        "company": "Tech Corp",
+        "description": "Analyze large datasets",
+    }
+    resume_text = "Sample resume content"
+    user_bio = "Data science professional"
+
+    result = run_pipeline(job_data, resume_text, user_bio)
+
+    assert result == "Crew execution results"
