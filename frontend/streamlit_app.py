@@ -7,11 +7,11 @@ st.set_page_config(
 )
 
 st.title("AI Job Hunt Assistant")
-st.markdown(
-    """
-    Use AI agent to analyze jobs, tailor your resume, and craft personalized messages to recruiters.
-    """
+description = (
+    "Use AI agent to analyze jobs, tailor your resume, "
+    "and craft personalized messages to recruiters."
 )
+st.markdown(description)
 
 # Input fields for job search
 keywords = st.text_input("Job Keywords", "Data Scientist")

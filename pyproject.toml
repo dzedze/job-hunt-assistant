@@ -28,7 +28,7 @@ include = ["backend*"]
 [project.optional-dependencies]
 dev = [
     "pre-commit",
-    "black",
+    "black==24.3.0",
     "ruff",
     "mypy",
     "bandit",
