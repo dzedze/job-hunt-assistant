@@ -31,8 +31,8 @@ deploying-ai-env
 *.txt
 
 # data
-data/processed/*
-data/raw/*
-data/vector/*
+data/customized_resumes/*
+data/jobs/*
+data/reports/*
 !data/.keep
-data/*
+# data/*
