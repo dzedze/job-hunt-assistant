@@ -45,6 +45,7 @@ test = [
 line-length = 68
 
 [tool.black]
+target-version = ["py312"]
 line-length = 68
 
 [tool.mypy]
