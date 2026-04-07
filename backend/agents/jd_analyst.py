@@ -6,6 +6,7 @@ from ..utils import config as cfg
 def get_jd_analyst_agent() -> Agent:
     llm = LLM(
         model="gpt-4o",
+        temperature=0.2,
         api_key=cfg.OPENAI_API_KEY,
     )
     return Agent(

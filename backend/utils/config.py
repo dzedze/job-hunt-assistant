@@ -19,9 +19,12 @@ SAVED_JOBS_DIR = (
 TEMP_JOBS_DIR = (
     PARENT_DIR / "data" / "jobs" / "temp"
 )  # temporary directory for fetched jobs
-COVER_LETTERS_DIR = (
-    PARENT_DIR / "data" / "cover_letters"
-)  # directory to save cover letters
+CUSTOMIZED_RESUMES_DIR = (
+    PARENT_DIR / "data" / "customized_resumes"
+)  # directory to save customized resumes
+CUSTOMIZED_RESUMES_PATH = (
+    CUSTOMIZED_RESUMES_DIR / "customized_resume.md"
+)  # path to the customized resume
 JOBS_REPORTS_DIR = PARENT_DIR / "data" / "reports"
 JOBS_REPORTS_PATH = (
     JOBS_REPORTS_DIR / "report.md"
@@ -34,5 +37,5 @@ TEMP_FETCHED_JOBS_PATH = TEMP_JOBS_DIR / "temp_fetched_jobs.json"
 # create directories if they do not exists
 SAVED_JOBS_DIR.mkdir(parents=True, exist_ok=True)
 TEMP_JOBS_DIR.mkdir(parents=True, exist_ok=True)
-COVER_LETTERS_DIR.mkdir(parents=True, exist_ok=True)
+CUSTOMIZED_RESUMES_DIR.mkdir(parents=True, exist_ok=True)
 RESUME_PATH.parent.mkdir(parents=True, exist_ok=True)

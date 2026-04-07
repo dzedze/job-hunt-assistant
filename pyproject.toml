@@ -14,6 +14,7 @@ dependencies = [
     "langchain-google-genai>=4.2.1",
     "crewai>=1.13.0",
     "langchain>=1.2.15",
+    "pypdf>=4.0.0",
 ]
 
 [project.scripts]
