@@ -27,7 +27,8 @@ dev = [
     "ruff",
     "mypy",
     "bandit",
-    "types-requests"
+    "types-requests",
+    "types-PyYAML"
 ]
 
 test = [
