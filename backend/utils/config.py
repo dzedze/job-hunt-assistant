@@ -25,6 +25,12 @@ CUSTOMIZED_RESUMES_DIR = (
 CUSTOMIZED_RESUMES_PATH = (
     CUSTOMIZED_RESUMES_DIR / "customized_resume.md"
 )  # path to the customized resume
+CUSTOMIZED_MESSAGES_DIR = (
+    PARENT_DIR / "data" / "customized_messages"
+)  # directory to save customized messages
+CUSTOMIZED_MESSAGES_PATH = (
+    CUSTOMIZED_MESSAGES_DIR / "customized_message.txt"
+)  # path to the customized message
 JOBS_REPORTS_DIR = PARENT_DIR / "data" / "reports"
 JOBS_REPORTS_PATH = (
     JOBS_REPORTS_DIR / "report.md"
@@ -38,4 +44,5 @@ TEMP_FETCHED_JOBS_PATH = TEMP_JOBS_DIR / "temp_fetched_jobs.json"
 SAVED_JOBS_DIR.mkdir(parents=True, exist_ok=True)
 TEMP_JOBS_DIR.mkdir(parents=True, exist_ok=True)
 CUSTOMIZED_RESUMES_DIR.mkdir(parents=True, exist_ok=True)
+CUSTOMIZED_MESSAGES_DIR.mkdir(parents=True, exist_ok=True)
 RESUME_PATH.parent.mkdir(parents=True, exist_ok=True)
