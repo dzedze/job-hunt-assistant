@@ -8,7 +8,9 @@ version = "0.1.0"
 description = "AI-powered job hunt assistant that helps users find and apply for jobs efficiently."
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "requests>=2.32.5",
+]
 
 [tool.setuptools.packages.find]
 where = ["."]
@@ -21,6 +23,8 @@ dev = [
     "ruff",
     "mypy",
     "bandit",
+    "python-dotenv",
+    "types-requests"
 ]
 
 test = [
@@ -38,6 +42,8 @@ line-length = 68
 warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
+install_types = true
+exclude = 'dist|\.venv|build'
 
 [tool.bandit]
 exclude_dirs = [".venv", "__pycache__", "build", "dist"]
