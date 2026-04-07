@@ -9,17 +9,18 @@ import pytest
 @pytest.fixture(autouse=True)
 def fake_import_environment(tmp_path: Path, monkeypatch):
     """Fixture to mock crewai and config modules for testing."""
-    # Create a fake utils package with a config module
-    utils_pkg = cast(Any, types.ModuleType("utils"))
-    utils_config = cast(Any, types.ModuleType("utils.config"))
-    utils_config.OPENAI_API_KEY = "fake-openai-key"
-    utils_config.CUSTOMIZED_MESSAGES_PATH = (
-        tmp_path / "customized_message.txt"
-    )
-    utils_pkg.config = utils_config
+    # Set environment variables before any imports
+    monkeypatch.setenv("OPENAI_API_KEY", "fake-openai-key")
+    monkeypatch.setenv("JOBS_API_KEY", "fake-jobs-key")
+    monkeypatch.setenv("JOBS_API_HOST", "fake-host")
 
-    monkeypatch.setitem(sys.modules, "utils", utils_pkg)
-    monkeypatch.setitem(sys.modules, "utils.config", utils_config)
+    # Clear backend modules from cache to force reload with mocked env
+    if "backend.utils" in sys.modules:
+        del sys.modules["backend.utils"]
+    if "backend.utils.config" in sys.modules:
+        del sys.modules["backend.utils.config"]
+    if "backend.agents.messaging_agent" in sys.modules:
+        del sys.modules["backend.agents.messaging_agent"]
 
     # Create fake crewai package with Agent and Task classes
     crewai_pkg = cast(Any, types.ModuleType("crewai"))
@@ -62,10 +63,6 @@ def fake_import_environment(tmp_path: Path, monkeypatch):
 
     monkeypatch.setitem(sys.modules, "crewai", crewai_pkg)
     monkeypatch.setitem(sys.modules, "crewai.llm", crewai_pkg.llm)
-
-    # Ensure reload uses our fake modules
-    if "backend.agents.messaging_agent" in sys.modules:
-        del sys.modules["backend.agents.messaging_agent"]
 
     yield
 
