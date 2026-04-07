@@ -11,6 +11,9 @@ requires-python = ">=3.12"
 dependencies = [
     "requests>=2.32.5",
     "python-dotenv",
+    "langchain-google-genai>=4.2.1",
+    "crewai>=1.13.0",
+    "langchain>=1.2.15",
 ]
 
 [tool.setuptools.packages.find]

@@ -22,6 +22,10 @@ TEMP_JOBS_DIR = (
 COVER_LETTERS_DIR = (
     PARENT_DIR / "data" / "cover_letters"
 )  # directory to save cover letters
+JOBS_REPORTS_DIR = PARENT_DIR / "data" / "reports"
+JOBS_REPORTS_PATH = (
+    JOBS_REPORTS_DIR / "report.md"
+)  # path to the jobs report
 RESUME_PATH = (
     PARENT_DIR / "data" / "resume" / "resume.pdf"
 )  # path to the resume
