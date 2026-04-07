@@ -295,6 +295,7 @@ name = "job-hunt-assistant"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "python-dotenv" },
     { name = "requests" },
 ]
 
@@ -304,7 +305,6 @@ dev = [
     { name = "black" },
     { name = "mypy" },
     { name = "pre-commit" },
-    { name = "python-dotenv" },
     { name = "ruff" },
     { name = "types-requests" },
 ]
@@ -321,7 +321,7 @@ requires-dist = [
     { name = "pre-commit", marker = "extra == 'dev'" },
     { name = "pytest", marker = "extra == 'test'" },
     { name = "pytest-cov", marker = "extra == 'test'" },
-    { name = "python-dotenv", marker = "extra == 'dev'" },
+    { name = "python-dotenv" },
     { name = "requests", specifier = ">=2.32.5" },
     { name = "ruff", marker = "extra == 'dev'" },
     { name = "types-requests", marker = "extra == 'dev'" },

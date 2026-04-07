@@ -10,6 +10,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "requests>=2.32.5",
+    "python-dotenv",
 ]
 
 [tool.setuptools.packages.find]
@@ -23,7 +24,6 @@ dev = [
     "ruff",
     "mypy",
     "bandit",
-    "python-dotenv",
     "types-requests"
 ]
 

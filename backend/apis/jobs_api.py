@@ -1,7 +1,14 @@
 import requests
+import json
+from pathlib import Path
 from requests.exceptions import RequestException
 from backend.utils import config as cfg
 from typing import List, Dict
+
+
+def store_fetched_jobs(path: Path, jobs: List[Dict]):
+    with open(path, "w") as file:
+        json.dump(jobs, file, indent=4)
 
 
 def fetch_jobs(
@@ -56,6 +63,8 @@ def fetch_jobs(
 
     if not job_list:
         return [{"message": "No jobs found."}]
+
+    store_fetched_jobs(cfg.TEMP_FETCHED_JOBS_PATH, job_list)
 
     results = []
 
