@@ -16,6 +16,9 @@ dependencies = [
     "langchain>=1.2.15",
 ]
 
+[project.scripts]
+run_pipeline = "backend.orchestrator:run_pipeline"
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["backend*"]

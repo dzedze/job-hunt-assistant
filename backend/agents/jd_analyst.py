@@ -1,15 +1,13 @@
 from crewai import Agent, Task
-from langchain_google_genai import ChatGoogleGenerativeAI
-import utils.config as cfg
-
-llm = ChatGoogleGenerativeAI(
-    model="gemini-2.0-flash",
-    temperature=0,
-    api_key=cfg.GEMINI_API_KEY,
-)
+from crewai.llm import LLM
+from ..utils import config as cfg
 
 
 def get_jd_analyst_agent() -> Agent:
+    llm = LLM(
+        model="gpt-4o",
+        api_key=cfg.OPENAI_API_KEY,
+    )
     return Agent(
         role="JD Analyst",
         goal="Understand and summarize job postings",
@@ -30,5 +28,5 @@ def create_jd_analysis_task(agent, job_description) -> Task:
         """,
         expected_output="A structured markdown summary containing sections for Qualifications, Required Skills, and Responsibilities.",
         agent=agent,
-        output_file=cfg.JOBS_REPORTS_PATH,
+        output_file=str(cfg.JOBS_REPORTS_PATH),
     )

@@ -81,7 +81,7 @@ def fetch_jobs(
                 ),
             }
         )
-    print(results)
+    # print(results)
     return results
 
 
