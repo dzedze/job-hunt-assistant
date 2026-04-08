@@ -1,6 +1,10 @@
 import streamlit as st
-from backend.orchestrator import run_pipeline
+from backend.orchestrator import run_pipeline, load_resume
 from backend.apis.jobs_api import fetch_jobs
+from backend.utils import config as cfg
+
+MAX_RESUME_SIZE_MB = 5
+MAX_RESUME_SIZE_BYTES = MAX_RESUME_SIZE_MB * 1024 * 1024
 
 st.set_page_config(
     page_title="AI Job Hunt Assistant", layout="centered"
@@ -16,9 +20,22 @@ st.markdown(description)
 # Input fields for job search
 keywords = st.text_input("Job Keywords", "Data Scientist")
 location = st.text_input("Location", "Toronto")
-resume_text = st.text_area(
-    "Paste your resume text here", height=200
+uploaded_resume = st.file_uploader(
+    "Upload your CV (PDF, max 5MB)",
+    type=["pdf"],
+    help="Your file will be saved as data/resume/resume.pdf",
 )
+
+if uploaded_resume is not None:
+    if uploaded_resume.size > MAX_RESUME_SIZE_BYTES:
+        st.error(
+            "Resume file is too large. Maximum allowed size is 5MB."
+        )
+    else:
+        with open(cfg.RESUME_PATH, "wb") as resume_file:
+            resume_file.write(uploaded_resume.getbuffer())
+        st.success("Resume uploaded and saved successfully.")
+
 user_bio = st.text_area(
     "Short bio about you (for personalized messaging)",
     "I'm a passionate data scientist with experience in machine learning and statistical analysis.",
@@ -52,16 +69,34 @@ if "jobs" in st.session_state:
         )
         if checkbox:
             selected_indexes.append(idx)
+            job_description = job.get(
+                "description", "No description available."
+            )
+            st.markdown("**Job Description**")
+            st.markdown(job_description)
 
     # Run pipeline for selected jobs
     if st.button("Apply to Selected Jobs"):
         if not selected_indexes:
             st.warning("Please select at least one job.")
-        elif not resume_text.strip():
+        elif uploaded_resume is not None and (
+            uploaded_resume.size > MAX_RESUME_SIZE_BYTES
+        ):
+            st.warning("Please upload a PDF file smaller than 5MB.")
+        elif (
+            uploaded_resume is None and not cfg.RESUME_PATH.exists()
+        ):
             st.warning(
-                "Please paste your resume text to tailor it for the selected jobs."
+                "Please upload your resume PDF before applying to jobs."
             )
         else:
+            resume_text = load_resume()
+            if not resume_text.strip():
+                st.warning(
+                    "Could not read text from the uploaded PDF. Try another file."
+                )
+                st.stop()
+
             for idx in selected_indexes:
                 job_data = st.session_state["jobs"][idx]
                 with st.spinner(
