@@ -24,6 +24,11 @@ def fake_import_environment(tmp_path: Path, monkeypatch):
         "backend.agents.resume_cl_agent",
         "backend.agents.messaging_agent",
         "backend.orchestrator",
+        "reportlab",
+        "reportlab.lib",
+        "reportlab.lib.pagesizes",
+        "reportlab.pdfgen",
+        "reportlab.pdfgen.canvas",
     ]
     for mod in modules_to_clear:
         if mod in sys.modules:
@@ -108,6 +113,64 @@ def fake_import_environment(tmp_path: Path, monkeypatch):
 
     monkeypatch.setitem(sys.modules, "crewai", crewai_pkg)
     monkeypatch.setitem(sys.modules, "crewai.llm", crewai_llm)
+
+    # Mock reportlab modules used to generate PDFs
+    reportlab_pkg = cast(Any, types.ModuleType("reportlab"))
+    reportlab_lib_pkg = cast(Any, types.ModuleType("reportlab.lib"))
+    reportlab_pagesizes_pkg = cast(
+        Any, types.ModuleType("reportlab.lib.pagesizes")
+    )
+    reportlab_pagesizes_pkg.letter = (612, 792)
+
+    reportlab_pdfgen_pkg = cast(
+        Any, types.ModuleType("reportlab.pdfgen")
+    )
+    reportlab_canvas_pkg = cast(
+        Any, types.ModuleType("reportlab.pdfgen.canvas")
+    )
+
+    class MockCanvas:
+        def __init__(self, path, pagesize=None):
+            self.path = path
+            self.pagesize = pagesize
+
+        def setFont(self, *_args):
+            return None
+
+        def drawString(self, *_args):
+            return None
+
+        def stringWidth(self, text, *_args):
+            return len(text) * 6
+
+        def showPage(self):
+            return None
+
+        def save(self):
+            Path(self.path).write_bytes(b"%PDF-1.4\n")
+
+    reportlab_canvas_pkg.Canvas = MockCanvas
+    reportlab_pdfgen_pkg.canvas = reportlab_canvas_pkg
+    reportlab_pkg.lib = reportlab_lib_pkg
+    reportlab_pkg.pdfgen = reportlab_pdfgen_pkg
+
+    monkeypatch.setitem(sys.modules, "reportlab", reportlab_pkg)
+    monkeypatch.setitem(
+        sys.modules, "reportlab.lib", reportlab_lib_pkg
+    )
+    monkeypatch.setitem(
+        sys.modules,
+        "reportlab.lib.pagesizes",
+        reportlab_pagesizes_pkg,
+    )
+    monkeypatch.setitem(
+        sys.modules, "reportlab.pdfgen", reportlab_pdfgen_pkg
+    )
+    monkeypatch.setitem(
+        sys.modules,
+        "reportlab.pdfgen.canvas",
+        reportlab_canvas_pkg,
+    )
 
     # Mock jobs_api.fetch_jobs
     jobs_api_pkg = cast(
@@ -275,7 +338,9 @@ def test_run_pipeline_successful():
 
     result = run_pipeline(job_data, resume_text, user_bio)
 
-    assert result == "Crew execution results"
+    assert result["crew_output"] == "Crew execution results"
+    assert result["resume_pdf_path"] is not None
+    assert result["cover_letter_pdf_path"] is not None
 
 
 def test_run_pipeline_no_description():
@@ -522,4 +587,4 @@ def test_run_pipeline_returns_crew_results():
 
     result = run_pipeline(job_data, resume_text, user_bio)
 
-    assert result == "Crew execution results"
+    assert result["crew_output"] == "Crew execution results"

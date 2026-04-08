@@ -1,4 +1,6 @@
 import streamlit as st
+from pathlib import Path
+
 from backend.orchestrator import run_pipeline, load_resume
 from backend.apis.jobs_api import fetch_jobs
 from backend.utils import config as cfg
@@ -105,8 +107,43 @@ if "jobs" in st.session_state:
                     result = run_pipeline(
                         job_data, resume_text, user_bio
                     )
+
+                    crew_output = result.get("crew_output", "")
+                    resume_pdf_path = result.get("resume_pdf_path")
+                    cover_pdf_path = result.get(
+                        "cover_letter_pdf_path"
+                    )
+
                     st.markdown("---")
                     st.markdown(
                         f"### The reach-out message for: {job_data.get('PositionTitle')}"
                     )
-                    st.markdown(result)
+                    st.markdown(crew_output)
+
+                    if (
+                        resume_pdf_path
+                        and Path(resume_pdf_path).exists()
+                    ):
+                        with open(resume_pdf_path, "rb") as file:
+                            st.download_button(
+                                "📄 Download Customized Resume (PDF)",
+                                data=file.read(),
+                                file_name=Path(
+                                    resume_pdf_path
+                                ).name,
+                                mime="application/pdf",
+                                key=f"resume_pdf_{idx}",
+                            )
+
+                    if (
+                        cover_pdf_path
+                        and Path(cover_pdf_path).exists()
+                    ):
+                        with open(cover_pdf_path, "rb") as file:
+                            st.download_button(
+                                "📄 Download Cover Letter (PDF)",
+                                data=file.read(),
+                                file_name=Path(cover_pdf_path).name,
+                                mime="application/pdf",
+                                key=f"cover_pdf_{idx}",
+                            )

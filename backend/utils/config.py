@@ -25,6 +25,12 @@ CUSTOMIZED_RESUMES_DIR = (
 CUSTOMIZED_RESUMES_PATH = (
     CUSTOMIZED_RESUMES_DIR / "customized_resume.md"
 )  # path to the customized resume
+CUSTOMIZED_RESUME_PDF_PATH = (
+    CUSTOMIZED_RESUMES_DIR / "customized_resume.pdf"
+)
+CUSTOMIZED_COVER_LETTER_PDF_PATH = (
+    CUSTOMIZED_RESUMES_DIR / "cover_letter.pdf"
+)
 CUSTOMIZED_MESSAGES_DIR = (
     PARENT_DIR / "data" / "customized_messages"
 )  # directory to save customized messages
