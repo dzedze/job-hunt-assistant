@@ -49,7 +49,11 @@ user_bio = st.text_area(
 
 # Search jobs
 if st.button("Search Jobs"):
-    job_posts = fetch_jobs(keywords, location)
+    with st.spinner(
+        f"Searching jobs for '{keywords}' in {location}..."
+    ):
+        job_posts = fetch_jobs(keywords, location)
+
     if not job_posts:
         st.error(
             "No jobs found for this search. Try different keywords or location."
