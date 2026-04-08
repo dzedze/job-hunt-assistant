@@ -19,6 +19,9 @@ description = (
 )
 st.markdown(description)
 
+if "application_results" not in st.session_state:
+    st.session_state["application_results"] = []
+
 # Input fields for job search
 keywords = st.text_input("Job Keywords", "Data Scientist")
 location = st.text_input("Location", "Toronto")
@@ -53,6 +56,7 @@ if st.button("Search Jobs"):
         )
     else:
         st.session_state["jobs"] = job_posts
+        st.session_state["application_results"] = []
         st.success(
             "Jobs fetched! Select a job to analyze and tailor your resume."
         )
@@ -99,6 +103,7 @@ if "jobs" in st.session_state:
                 )
                 st.stop()
 
+            st.session_state["application_results"] = []
             for idx in selected_indexes:
                 job_data = st.session_state["jobs"][idx]
                 with st.spinner(
@@ -114,36 +119,53 @@ if "jobs" in st.session_state:
                         "cover_letter_pdf_path"
                     )
 
-                    st.markdown("---")
-                    st.markdown(
-                        f"### The reach-out message for: {job_data.get('PositionTitle')}"
+                    st.session_state["application_results"].append(
+                        {
+                            "job_index": idx,
+                            "job_title": job_data.get(
+                                "title", "Unknown role"
+                            ),
+                            "crew_output": crew_output,
+                            "resume_pdf_path": resume_pdf_path,
+                            "cover_pdf_path": cover_pdf_path,
+                        }
                     )
-                    st.markdown(crew_output)
 
-                    if (
-                        resume_pdf_path
-                        and Path(resume_pdf_path).exists()
-                    ):
-                        with open(resume_pdf_path, "rb") as file:
-                            st.download_button(
-                                "📄 Download Customized Resume (PDF)",
-                                data=file.read(),
-                                file_name=Path(
-                                    resume_pdf_path
-                                ).name,
-                                mime="application/pdf",
-                                key=f"resume_pdf_{idx}",
-                            )
+if st.session_state.get("application_results"):
+    col_results_title, col_clear = st.columns([3, 1])
+    with col_results_title:
+        st.markdown("## Generated Results")
+    with col_clear:
+        if st.button("Clear Results"):
+            st.session_state["application_results"] = []
+            st.rerun()
 
-                    if (
-                        cover_pdf_path
-                        and Path(cover_pdf_path).exists()
-                    ):
-                        with open(cover_pdf_path, "rb") as file:
-                            st.download_button(
-                                "📄 Download Cover Letter (PDF)",
-                                data=file.read(),
-                                file_name=Path(cover_pdf_path).name,
-                                mime="application/pdf",
-                                key=f"cover_pdf_{idx}",
-                            )
+    for item in st.session_state["application_results"]:
+        result_idx = item["job_index"]
+        st.markdown("---")
+        st.markdown(
+            f"### The reach-out message for: {item['job_title']}"
+        )
+        st.markdown(item["crew_output"])
+
+        resume_pdf_path = item.get("resume_pdf_path")
+        if resume_pdf_path and Path(resume_pdf_path).exists():
+            with open(resume_pdf_path, "rb") as file:
+                st.download_button(
+                    "📄 Download Customized Resume (PDF)",
+                    data=file.read(),
+                    file_name=Path(resume_pdf_path).name,
+                    mime="application/pdf",
+                    key=f"resume_pdf_{result_idx}",
+                )
+
+        cover_pdf_path = item.get("cover_pdf_path")
+        if cover_pdf_path and Path(cover_pdf_path).exists():
+            with open(cover_pdf_path, "rb") as file:
+                st.download_button(
+                    "📄 Download Cover Letter (PDF)",
+                    data=file.read(),
+                    file_name=Path(cover_pdf_path).name,
+                    mime="application/pdf",
+                    key=f"cover_pdf_{result_idx}",
+                )
