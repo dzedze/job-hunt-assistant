@@ -37,16 +37,19 @@ Refer to `.env.example` for the full list of required variables.
 
 ---
 
-### 2. Install Dependencies
+### 2. Install Backend Dependencies
 
 This project uses [uv](https://github.com/astral-sh/uv) as the package manager. Install it if you haven't already:
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-Then install all dependencies:
+Then create and sync the backend environment:
 ```bash
+cd backend
+uv venv .venv
 uv sync
+source .venv/bin/activate
 ```
 
 ---
@@ -54,9 +57,45 @@ uv sync
 ### 3. Run the Application
 
 ```bash
-uv run -m streamlit run ./frontend/streamlit_app.py
+cd backend
+uv run -m streamlit run ../frontend/streamlit_app.py
 ```
 
 The app will be available at `http://localhost:8501` by default.
+
+---
+
+## Project Structure
+
+```text
+job-hunt-assistant/
+├── backend/                    # Independent Python package
+│   ├── pyproject.toml          # Backend package config
+│   ├── uv.lock                 # Backend lock file
+│   ├── .python-version         # Backend Python version
+│   ├── .venv/                  # Backend virtual environment
+│   ├── tests/                  # Backend tests
+│   ├── agents/
+│   ├── apis/
+│   ├── utils/
+│   └── data/
+├── frontend/
+│   └── streamlit_app.py        # Streamlit UI
+└── .github/workflows/ci.yaml   # CI runs backend checks/tests
+```
+
+## Development Commands
+
+From the `backend` directory:
+
+```bash
+# run tests
+pytest tests/
+
+# lint/format/security
+ruff check .
+black --check .
+bandit -c pyproject.toml -r .
+```
 
 
