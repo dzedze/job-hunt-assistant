@@ -3,7 +3,7 @@ name: ci for job hunt assistant
 on:
   push:
     branches: [main]
-    workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   lint-static-type-security-checks:
