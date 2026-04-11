@@ -8,6 +8,9 @@ on:
 jobs:
   lint-static-type-security-checks:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,6 +37,9 @@ jobs:
   
   tests:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -47,4 +53,4 @@ jobs:
           pip install -e ".[test]"
       - name: Run tests with coverage
         run: |
-          pytest --cov=backend tests/
+          pytest --cov=. tests/
