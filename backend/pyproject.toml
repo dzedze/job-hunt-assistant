@@ -31,9 +31,7 @@ dev = [
     "pre-commit",
     "black==24.3.0",
     "ruff",
-    "mypy",
     "bandit",
-    "types-requests",
     "types-PyYAML"
 ]
 
@@ -48,13 +46,6 @@ line-length = 68
 [tool.black]
 target-version = ["py312"]
 line-length = 68
-
-[tool.mypy]
-warn_return_any = true
-warn_unused_configs = true
-ignore_missing_imports = true
-install_types = false
-exclude = 'dist|\.venv|build'
 
 [tool.bandit]
 exclude_dirs = [".venv", "__pycache__", "build", "dist"]
