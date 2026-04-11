@@ -37,6 +37,9 @@ if uploaded_resume is not None:
             "Resume file is too large. Maximum allowed size is 5MB."
         )
     else:
+        Path(cfg.RESUME_PATH).parent.mkdir(
+            parents=True, exist_ok=True
+        )
         with open(cfg.RESUME_PATH, "wb") as resume_file:
             resume_file.write(uploaded_resume.getbuffer())
         st.success("Resume uploaded and saved successfully.")
