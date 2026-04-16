@@ -55,10 +55,10 @@ source .venv/bin/activate
 ---
 
 ### 3. Run the Application
-
+Go back to the root folder (job-hunt-assistant), then run the streamlit application
 ```bash
-cd backend
-uv run -m streamlit run ../frontend/streamlit_app.py
+cd .. 
+uv run -m streamlit run frontend/streamlit_app.py
 ```
 
 The app will be available at `http://localhost:8501` by default.
