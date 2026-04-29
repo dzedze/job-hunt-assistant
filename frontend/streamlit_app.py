@@ -1,9 +1,16 @@
+import logging
+
 import streamlit as st
 from pathlib import Path
 
 from backend.orchestrator import run_pipeline, load_resume
 from backend.apis.jobs_api import fetch_jobs
 from backend.utils import config as cfg
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s | %(name)s | %(levelname)s | %(message)s",
+)
 
 MAX_RESUME_SIZE_MB = 5
 MAX_RESUME_SIZE_BYTES = MAX_RESUME_SIZE_MB * 1024 * 1024
@@ -65,7 +72,7 @@ if st.button("Search Jobs"):
         st.session_state["jobs"] = job_posts
         st.session_state["application_results"] = []
         st.success(
-            "Jobs fetched! Select a job to analyze and tailor your resume."
+            f"Jobs fetched! Found {len(job_posts)} job(s)."
         )
 
 # Show checkbox for job selection

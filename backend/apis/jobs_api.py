@@ -1,10 +1,12 @@
 import requests
 import json
+import logging
 from pathlib import Path
 from requests.exceptions import RequestException
 from backend.utils import config as cfg
 from typing import List, Dict
 
+logger = logging.getLogger(__name__)
 
 def store_fetched_jobs(path: Path, jobs: List[Dict]):
     with open(path, "w") as file:
@@ -15,7 +17,7 @@ def fetch_jobs(
     role: str,
     area: str,
     country: str = "Canada",
-    max_results: int = 5,
+    max_results: int = 10,
 ) -> List[Dict]:
     url = f"https://{cfg.JOBS_API_HOST}/search"
 
@@ -45,24 +47,16 @@ def fetch_jobs(
         response.raise_for_status()
         data = response.json()
     except RequestException as error:
-        return [
-            {
-                "message": "Job fetch failed",
-                "error": str(error),
-            }
-        ]
+        logger.error(f"Job fetch failed: {error}") 
+        return []
     except ValueError:
-        return [
-            {
-                "message": "Job fetch failed",
-                "error": "Invalid JSON response from jobs API.",
-            }
-        ]
+        logger.error("Invalid JSON response from jobs API.")
+        return []
 
     job_list = data.get("data", [])[:max_results]
 
     if not job_list:
-        return [{"message": "No jobs found."}]
+        return []
 
     store_fetched_jobs(cfg.TEMP_FETCHED_JOBS_PATH, job_list)
 
