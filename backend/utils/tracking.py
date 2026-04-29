@@ -4,7 +4,9 @@ import datetime
 import re
 
 
-def save_cover_letter_file(job_title, cover_letter, directory="data/cover_letters"):
+def save_cover_letter_file(
+    job_title, cover_letter, directory="data/cover_letters"
+):
     # Normalize job title for filenames: replace unsafe chars and whitespace with underscores
     safe_title = re.sub(r"[\s]+", "_", job_title)
     safe_title = re.sub(r"[^A-Za-z0-9_\-]", "_", safe_title)

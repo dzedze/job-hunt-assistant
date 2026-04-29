@@ -46,7 +46,9 @@ def fake_import_environment(tmp_path: Path, monkeypatch):
                     raise FileNotFoundError(f"No file at {path}")
             # Return mock pages for valid paths
             mock_page = Mock()
-            mock_page.extract_text.return_value = "Sample resume text"
+            mock_page.extract_text.return_value = (
+                "Sample resume text"
+            )
             self.pages = [mock_page]
 
     pypdf_pkg.PdfReader = MockPdfReader
@@ -56,7 +58,9 @@ def fake_import_environment(tmp_path: Path, monkeypatch):
     crewai_pkg = cast(Any, types.ModuleType("crewai"))
 
     class Agent:
-        def __init__(self, role, goal, backstory, llm, verbose=False):
+        def __init__(
+            self, role, goal, backstory, llm, verbose=False
+        ):
             self.role = role
             self.goal = goal
             self.backstory = backstory
@@ -83,7 +87,9 @@ def fake_import_environment(tmp_path: Path, monkeypatch):
             self.api_key = api_key
 
     class Crew:
-        def __init__(self, agents, tasks, process=None, verbose=False):
+        def __init__(
+            self, agents, tasks, process=None, verbose=False
+        ):
             self.agents = agents
             self.tasks = tasks
             self.process = process
@@ -111,11 +117,17 @@ def fake_import_environment(tmp_path: Path, monkeypatch):
     # Mock reportlab modules used to generate PDFs
     reportlab_pkg = cast(Any, types.ModuleType("reportlab"))
     reportlab_lib_pkg = cast(Any, types.ModuleType("reportlab.lib"))
-    reportlab_pagesizes_pkg = cast(Any, types.ModuleType("reportlab.lib.pagesizes"))
+    reportlab_pagesizes_pkg = cast(
+        Any, types.ModuleType("reportlab.lib.pagesizes")
+    )
     reportlab_pagesizes_pkg.letter = (612, 792)
 
-    reportlab_pdfgen_pkg = cast(Any, types.ModuleType("reportlab.pdfgen"))
-    reportlab_canvas_pkg = cast(Any, types.ModuleType("reportlab.pdfgen.canvas"))
+    reportlab_pdfgen_pkg = cast(
+        Any, types.ModuleType("reportlab.pdfgen")
+    )
+    reportlab_canvas_pkg = cast(
+        Any, types.ModuleType("reportlab.pdfgen.canvas")
+    )
 
     class MockCanvas:
         def __init__(self, path, pagesize=None):
@@ -143,13 +155,17 @@ def fake_import_environment(tmp_path: Path, monkeypatch):
     reportlab_pkg.pdfgen = reportlab_pdfgen_pkg
 
     monkeypatch.setitem(sys.modules, "reportlab", reportlab_pkg)
-    monkeypatch.setitem(sys.modules, "reportlab.lib", reportlab_lib_pkg)
+    monkeypatch.setitem(
+        sys.modules, "reportlab.lib", reportlab_lib_pkg
+    )
     monkeypatch.setitem(
         sys.modules,
         "reportlab.lib.pagesizes",
         reportlab_pagesizes_pkg,
     )
-    monkeypatch.setitem(sys.modules, "reportlab.pdfgen", reportlab_pdfgen_pkg)
+    monkeypatch.setitem(
+        sys.modules, "reportlab.pdfgen", reportlab_pdfgen_pkg
+    )
     monkeypatch.setitem(
         sys.modules,
         "reportlab.pdfgen.canvas",
@@ -157,7 +173,9 @@ def fake_import_environment(tmp_path: Path, monkeypatch):
     )
 
     # Mock jobs_api.fetch_jobs
-    jobs_api_pkg = cast(Any, types.ModuleType("backend.apis.jobs_api"))
+    jobs_api_pkg = cast(
+        Any, types.ModuleType("backend.apis.jobs_api")
+    )
 
     def mock_fetch_jobs(*args, **kwargs):
         return [
@@ -172,10 +190,14 @@ def fake_import_environment(tmp_path: Path, monkeypatch):
         ]
 
     jobs_api_pkg.fetch_jobs = mock_fetch_jobs
-    monkeypatch.setitem(sys.modules, "backend.apis.jobs_api", jobs_api_pkg)
+    monkeypatch.setitem(
+        sys.modules, "backend.apis.jobs_api", jobs_api_pkg
+    )
 
     # Mock agent creation functions
-    jd_analyst_pkg = cast(Any, types.ModuleType("backend.agents.jd_analyst"))
+    jd_analyst_pkg = cast(
+        Any, types.ModuleType("backend.agents.jd_analyst")
+    )
 
     def mock_get_jd_analyst_agent():
         return Agent(
@@ -199,7 +221,9 @@ def fake_import_environment(tmp_path: Path, monkeypatch):
         )
 
     jd_analyst_pkg.get_jd_analyst_agent = mock_get_jd_analyst_agent
-    jd_analyst_pkg.create_jd_analysis_task = mock_create_jd_analysis_task
+    jd_analyst_pkg.create_jd_analysis_task = (
+        mock_create_jd_analysis_task
+    )
     monkeypatch.setitem(
         sys.modules,
         "backend.agents.jd_analyst",
@@ -207,7 +231,9 @@ def fake_import_environment(tmp_path: Path, monkeypatch):
     )
 
     # Mock resume_cl_agent
-    resume_pkg = cast(Any, types.ModuleType("backend.agents.resume_cl_agent"))
+    resume_pkg = cast(
+        Any, types.ModuleType("backend.agents.resume_cl_agent")
+    )
 
     def mock_get_resume_cl_agent():
         return Agent(
@@ -232,10 +258,14 @@ def fake_import_environment(tmp_path: Path, monkeypatch):
 
     resume_pkg.get_resume_cl_agent = mock_get_resume_cl_agent
     resume_pkg.create_resume_cl_task = mock_create_resume_cl_task
-    monkeypatch.setitem(sys.modules, "backend.agents.resume_cl_agent", resume_pkg)
+    monkeypatch.setitem(
+        sys.modules, "backend.agents.resume_cl_agent", resume_pkg
+    )
 
     # Mock messaging_agent
-    messaging_pkg = cast(Any, types.ModuleType("backend.agents.messaging_agent"))
+    messaging_pkg = cast(
+        Any, types.ModuleType("backend.agents.messaging_agent")
+    )
 
     def mock_get_messaging_agent():
         return Agent(
@@ -260,7 +290,9 @@ def fake_import_environment(tmp_path: Path, monkeypatch):
 
     messaging_pkg.get_messaging_agent = mock_get_messaging_agent
     messaging_pkg.create_messaging_task = mock_create_messaging_task
-    monkeypatch.setitem(sys.modules, "backend.agents.messaging_agent", messaging_pkg)
+    monkeypatch.setitem(
+        sys.modules, "backend.agents.messaging_agent", messaging_pkg
+    )
 
     yield
 
@@ -385,7 +417,9 @@ def test_run_pipeline_extracts_job_details():
 
     messaging_task_called = {"company": None, "title": None}
 
-    def mock_create_messaging_task(agent, desc, company, title, bio):
+    def mock_create_messaging_task(
+        agent, desc, company, title, bio
+    ):
         messaging_task_called["company"] = company
         messaging_task_called["title"] = title
         return Mock(

@@ -10,12 +10,14 @@ repos:
             --config,
             backend/pyproject.toml,
           ]
+        exclude: ^frontend/
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.4.1
     hooks:
       - id: ruff
         args: [--fix, --config, backend/pyproject.toml]
+        exclude: ^frontend/
 
   - repo: https://github.com/PyCQA/bandit
     rev: 1.7.8

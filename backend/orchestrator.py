@@ -30,10 +30,14 @@ def _extract_resume_and_cover_letter(
     cover_marker = "<<COVER_LETTER>>"
 
     if resume_marker in content and cover_marker in content:
-        resume_start = content.find(resume_marker) + len(resume_marker)
+        resume_start = content.find(resume_marker) + len(
+            resume_marker
+        )
         cover_start = content.find(cover_marker)
         resume_text = content[resume_start:cover_start].strip()
-        cover_text = content[cover_start + len(cover_marker) :].strip()
+        cover_text = content[
+            cover_start + len(cover_marker) :
+        ].strip()
         return resume_text, cover_text
 
     return content.strip(), ""
@@ -59,7 +63,10 @@ def _write_text_pdf(path: Path, text: str, title: str) -> None:
             current_line = ""
             for word in words:
                 candidate = f"{current_line} {word}".strip()
-                if pdf.stringWidth(candidate, "Helvetica", 11) < width - 100:
+                if (
+                    pdf.stringWidth(candidate, "Helvetica", 11)
+                    < width - 100
+                ):
                     current_line = candidate
                 else:
                     pdf.drawString(50, y_position, current_line)
@@ -91,12 +98,16 @@ def _save_resume_and_cover_letter_pdfs(
     if not content.strip():
         return None, None
 
-    resume_text, cover_letter_text = _extract_resume_and_cover_letter(content)
+    resume_text, cover_letter_text = (
+        _extract_resume_and_cover_letter(content)
+    )
 
     resume_pdf_path = Path(cfg.CUSTOMIZED_RESUME_PDF_PATH)
     cover_pdf_path = Path(cfg.CUSTOMIZED_COVER_LETTER_PDF_PATH)
 
-    _write_text_pdf(resume_pdf_path, resume_text, "Customized Resume")
+    _write_text_pdf(
+        resume_pdf_path, resume_text, "Customized Resume"
+    )
     _write_text_pdf(
         cover_pdf_path,
         cover_letter_text or "Cover letter content not generated.",
@@ -134,7 +145,9 @@ def run_pipeline(job_data=None, resume_text=None, user_bio=None):
     job_description = job_data.get("description", "")
     # print(job_description)
     if not job_description:
-        print("No job description found in the first job post. Exiting pipeline.")
+        print(
+            "No job description found in the first job post. Exiting pipeline."
+        )
         return
 
     agency_name = job_data.get("company", "the company")
@@ -152,7 +165,9 @@ def run_pipeline(job_data=None, resume_text=None, user_bio=None):
 
     # Create tasks
     jd_task = create_jd_analysis_task(jd_agent, job_description)
-    resume_task = create_resume_cl_task(resume_agent, job_description, resume_text)
+    resume_task = create_resume_cl_task(
+        resume_agent, job_description, resume_text
+    )
 
     message_task = create_messaging_task(
         message_agent,
@@ -170,7 +185,9 @@ def run_pipeline(job_data=None, resume_text=None, user_bio=None):
     )
 
     results = crew.kickoff()
-    resume_pdf_path, cover_pdf_path = _save_resume_and_cover_letter_pdfs(str(results))
+    resume_pdf_path, cover_pdf_path = (
+        _save_resume_and_cover_letter_pdfs(str(results))
+    )
 
     return {
         "crew_output": results,

@@ -19,7 +19,9 @@ def get_resume_cl_agent() -> Agent:
     )
 
 
-def create_resume_cl_task(agent, job_summary, resume_content) -> Task:
+def create_resume_cl_task(
+    agent, job_summary, resume_content
+) -> Task:
     return Task(
         description=f"""
         Using the following job summary and the applicant's existing resume content, write a tailored resume and cover letter that highlights the applicant's relevant skills and experiences for the job.

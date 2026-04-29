@@ -25,7 +25,9 @@ def fake_import_environment(tmp_path: Path, monkeypatch):
     crewai_pkg = cast(Any, types.ModuleType("crewai"))
 
     class Agent:
-        def __init__(self, role, goal, backstory, llm, verbose=False):
+        def __init__(
+            self, role, goal, backstory, llm, verbose=False
+        ):
             self.role = role
             self.goal = goal
             self.backstory = backstory
@@ -33,7 +35,9 @@ def fake_import_environment(tmp_path: Path, monkeypatch):
             self.verbose = verbose
 
     class Task:
-        def __init__(self, description, expected_output, agent, output_file):
+        def __init__(
+            self, description, expected_output, agent, output_file
+        ):
             self.description = description
             self.expected_output = expected_output
             self.agent = agent
@@ -78,7 +82,9 @@ def test_create_jd_analysis_task_returns_task(monkeypatch):
 
     fake_agent = object()
     job_description = "This is a sample job description."
-    task = jd_analyst.create_jd_analysis_task(fake_agent, job_description)
+    task = jd_analyst.create_jd_analysis_task(
+        fake_agent, job_description
+    )
 
     assert task.agent is fake_agent
     assert "Analyze the following job posting" in task.description

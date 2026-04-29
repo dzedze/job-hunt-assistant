@@ -71,7 +71,9 @@ def fetch_jobs(
                 "company": job.get("employer_name"),
                 "location": job.get("job_city"),
                 "description": job.get("job_description"),
-                "apply_link": job.get("job_apply_link", "Not provided"),
+                "apply_link": job.get(
+                    "job_apply_link", "Not provided"
+                ),
             }
         )
     # print(results)
