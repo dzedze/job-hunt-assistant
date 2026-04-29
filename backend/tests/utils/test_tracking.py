@@ -22,9 +22,7 @@ class TestSaveCoverLetterFile:
         job_title = "Software Engineer"
         cover_letter = "This is a test cover letter content."
 
-        save_cover_letter_file(
-            job_title, cover_letter, directory=self.test_dir
-        )
+        save_cover_letter_file(job_title, cover_letter, directory=self.test_dir)
 
         # Check that directory was created
         assert os.path.exists(self.test_dir)
@@ -45,14 +43,10 @@ class TestSaveCoverLetterFile:
 
     def test_save_cover_letter_special_characters(self):
         """Test cover letter saving with special characters in job title."""
-        job_title = (
-            'Senior Dev/Ops Engineer: "Full Stack" @ Google?'
-        )
+        job_title = 'Senior Dev/Ops Engineer: "Full Stack" @ Google?'
         cover_letter = "Special characters test content."
 
-        save_cover_letter_file(
-            job_title, cover_letter, directory=self.test_dir
-        )
+        save_cover_letter_file(job_title, cover_letter, directory=self.test_dir)
 
         files = os.listdir(self.test_dir)
         assert len(files) == 1
@@ -70,9 +64,7 @@ class TestSaveCoverLetterFile:
         job_title = "Test Job"
         cover_letter = "Test content"
 
-        save_cover_letter_file(
-            job_title, cover_letter, directory=nested_dir
-        )
+        save_cover_letter_file(job_title, cover_letter, directory=nested_dir)
 
         assert os.path.exists(nested_dir)
         files = os.listdir(nested_dir)
@@ -83,9 +75,7 @@ class TestLogApplication:
     def setup_method(self):
         """Set up test fixtures before each test method."""
         self.temp_dir = tempfile.TemporaryDirectory()
-        self.test_file = os.path.join(
-            self.temp_dir.name, "applications.csv"
-        )
+        self.test_file = os.path.join(self.temp_dir.name, "applications.csv")
 
     def teardown_method(self):
         """Clean up test fixtures after each test method."""
@@ -95,9 +85,7 @@ class TestLogApplication:
         """Test that log_application creates a CSV file with headers."""
         job_title = "Data Scientist"
         agency = "Tech Corp"
-        resume_summary = (
-            "Experienced data scientist with ML expertise"
-        )
+        resume_summary = "Experienced data scientist with ML expertise"
 
         log_application(
             job_title,
@@ -122,9 +110,7 @@ class TestLogApplication:
             ]
             assert rows[1][0] == job_title
             assert rows[1][1] == agency
-            assert (
-                rows[1][2] == resume_summary[:150]
-            )  # Should be truncated if longer
+            assert rows[1][2] == resume_summary[:150]  # Should be truncated if longer
 
     def test_log_application_appends_to_existing(self):
         """Test that log_application appends to existing CSV file."""
@@ -177,9 +163,7 @@ class TestLogApplication:
 
             assert rows[1][0] == "Software Engineer"  # Stripped
             assert rows[1][1] == "Tech Company"  # Stripped
-            assert (
-                rows[1][2] == "ML Engineer with experience"
-            )  # Stripped
+            assert rows[1][2] == "ML Engineer with experience"  # Stripped
 
     def test_log_application_truncates_summary(self):
         """Test that resume summary is truncated to 150 characters."""
@@ -187,9 +171,7 @@ class TestLogApplication:
         job_title = "Test Job"
         agency = "Test Agency"
 
-        log_application(
-            job_title, agency, long_summary, filepath=self.test_file
-        )
+        log_application(job_title, agency, long_summary, filepath=self.test_file)
 
         with open(self.test_file, "r", newline="") as csvfile:
             reader = csv.reader(csvfile)
@@ -200,13 +182,9 @@ class TestLogApplication:
 
     def test_log_application_creates_directory(self):
         """Test that log_application creates the directory if it doesn't exist."""
-        nested_file = os.path.join(
-            self.temp_dir.name, "subdir", "applications.csv"
-        )
+        nested_file = os.path.join(self.temp_dir.name, "subdir", "applications.csv")
 
-        log_application(
-            "Job", "Agency", "Summary", filepath=nested_file
-        )
+        log_application("Job", "Agency", "Summary", filepath=nested_file)
 
         assert os.path.exists(os.path.dirname(nested_file))
         assert os.path.exists(nested_file)

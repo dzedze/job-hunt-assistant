@@ -8,6 +8,7 @@ from typing import List, Dict
 
 logger = logging.getLogger(__name__)
 
+
 def store_fetched_jobs(path: Path, jobs: List[Dict]):
     with open(path, "w") as file:
         json.dump(jobs, file, indent=4)
@@ -47,7 +48,7 @@ def fetch_jobs(
         response.raise_for_status()
         data = response.json()
     except RequestException as error:
-        logger.error(f"Job fetch failed: {error}") 
+        logger.error(f"Job fetch failed: {error}")
         return []
     except ValueError:
         logger.error("Invalid JSON response from jobs API.")
@@ -70,9 +71,7 @@ def fetch_jobs(
                 "company": job.get("employer_name"),
                 "location": job.get("job_city"),
                 "description": job.get("job_description"),
-                "apply_link": job.get(
-                    "job_apply_link", "Not provided"
-                ),
+                "apply_link": job.get("job_apply_link", "Not provided"),
             }
         )
     # print(results)

@@ -26,9 +26,7 @@ def fake_import_environment(tmp_path: Path, monkeypatch):
     crewai_pkg = cast(Any, types.ModuleType("crewai"))
 
     class Agent:
-        def __init__(
-            self, role, goal, backstory, llm, verbose=False
-        ):
+        def __init__(self, role, goal, backstory, llm, verbose=False):
             self.role = role
             self.goal = goal
             self.backstory = backstory
@@ -114,9 +112,7 @@ def test_create_messaging_task_with_custom_bio():
     job_summary = "ML Engineer role"
     agency_name = "ML Corp"
     job_title = "ML Engineer"
-    custom_bio = (
-        "Expert machine learning engineer with 5+ years experience"
-    )
+    custom_bio = "Expert machine learning engineer with 5+ years experience"
 
     task = messaging_agent.create_messaging_task(
         fake_agent,
@@ -137,9 +133,7 @@ def test_default_user_bio_exists():
     assert hasattr(messaging_agent, "default_user_bio")
     assert isinstance(messaging_agent.default_user_bio, str)
     assert len(messaging_agent.default_user_bio) > 0
-    assert "Data science professional" in (
-        messaging_agent.default_user_bio
-    )
+    assert "Data science professional" in (messaging_agent.default_user_bio)
 
 
 def test_create_messaging_task_output_expectations():

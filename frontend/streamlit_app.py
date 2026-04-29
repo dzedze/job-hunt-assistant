@@ -15,9 +15,7 @@ logging.basicConfig(
 MAX_RESUME_SIZE_MB = 5
 MAX_RESUME_SIZE_BYTES = MAX_RESUME_SIZE_MB * 1024 * 1024
 
-st.set_page_config(
-    page_title="AI Job Hunt Assistant", layout="centered"
-)
+st.set_page_config(page_title="AI Job Hunt Assistant", layout="centered")
 
 st.title("AI Job Hunt Assistant")
 description = (
@@ -40,13 +38,9 @@ uploaded_resume = st.file_uploader(
 
 if uploaded_resume is not None:
     if uploaded_resume.size > MAX_RESUME_SIZE_BYTES:
-        st.error(
-            "Resume file is too large. Maximum allowed size is 5MB."
-        )
+        st.error("Resume file is too large. Maximum allowed size is 5MB.")
     else:
-        Path(cfg.RESUME_PATH).parent.mkdir(
-            parents=True, exist_ok=True
-        )
+        Path(cfg.RESUME_PATH).parent.mkdir(parents=True, exist_ok=True)
         with open(cfg.RESUME_PATH, "wb") as resume_file:
             resume_file.write(uploaded_resume.getbuffer())
         st.success("Resume uploaded and saved successfully.")
@@ -59,39 +53,27 @@ user_bio = st.text_area(
 
 # Search jobs
 if st.button("Search Jobs"):
-    with st.spinner(
-        f"Searching jobs for '{keywords}' in {location}..."
-    ):
+    with st.spinner(f"Searching jobs for '{keywords}' in {location}..."):
         job_posts = fetch_jobs(keywords, location)
 
     if not job_posts:
-        st.error(
-            "No jobs found for this search. Try different keywords or location."
-        )
+        st.error("No jobs found for this search. Try different keywords or location.")
     else:
         st.session_state["jobs"] = job_posts
         st.session_state["application_results"] = []
-        st.success(
-            f"Jobs fetched! Found {len(job_posts)} job(s)."
-        )
+        st.success(f"Jobs fetched! Found {len(job_posts)} job(s).")
 
 # Show checkbox for job selection
 if "jobs" in st.session_state:
     selected_indexes = []
-    st.markdown(
-        "### Select jobs to analyze and tailor your resume:"
-    )
+    st.markdown("### Select jobs to analyze and tailor your resume:")
     for idx, job in enumerate(st.session_state["jobs"]):
         title = job.get("title", "No title")
         company = job.get("company", "No company")
-        checkbox = st.checkbox(
-            f"{title} at {company}", key=f"job_{idx}"
-        )
+        checkbox = st.checkbox(f"{title} at {company}", key=f"job_{idx}")
         if checkbox:
             selected_indexes.append(idx)
-            job_description = job.get(
-                "description", "No description available."
-            )
+            job_description = job.get("description", "No description available.")
             st.markdown("**Job Description**")
             st.markdown(job_description)
 
@@ -103,12 +85,8 @@ if "jobs" in st.session_state:
             uploaded_resume.size > MAX_RESUME_SIZE_BYTES
         ):
             st.warning("Please upload a PDF file smaller than 5MB.")
-        elif (
-            uploaded_resume is None and not cfg.RESUME_PATH.exists()
-        ):
-            st.warning(
-                "Please upload your resume PDF before applying to jobs."
-            )
+        elif uploaded_resume is None and not cfg.RESUME_PATH.exists():
+            st.warning("Please upload your resume PDF before applying to jobs.")
         else:
             resume_text = load_resume()
             if not resume_text.strip():
@@ -123,22 +101,16 @@ if "jobs" in st.session_state:
                 with st.spinner(
                     f"Applying to {job_data.get('title')} at {job_data.get('company', 'the company')}..."
                 ):
-                    result = run_pipeline(
-                        job_data, resume_text, user_bio
-                    )
+                    result = run_pipeline(job_data, resume_text, user_bio)
 
                     crew_output = result.get("crew_output", "")
                     resume_pdf_path = result.get("resume_pdf_path")
-                    cover_pdf_path = result.get(
-                        "cover_letter_pdf_path"
-                    )
+                    cover_pdf_path = result.get("cover_letter_pdf_path")
 
                     st.session_state["application_results"].append(
                         {
                             "job_index": idx,
-                            "job_title": job_data.get(
-                                "title", "Unknown role"
-                            ),
+                            "job_title": job_data.get("title", "Unknown role"),
                             "crew_output": crew_output,
                             "resume_pdf_path": resume_pdf_path,
                             "cover_pdf_path": cover_pdf_path,
@@ -157,9 +129,7 @@ if st.session_state.get("application_results"):
     for item in st.session_state["application_results"]:
         result_idx = item["job_index"]
         st.markdown("---")
-        st.markdown(
-            f"### The reach-out message for: {item['job_title']}"
-        )
+        st.markdown(f"### The reach-out message for: {item['job_title']}")
         st.markdown(item["crew_output"])
 
         resume_pdf_path = item.get("resume_pdf_path")

@@ -90,7 +90,7 @@ def test_fetch_jobs_returns_no_jobs(monkeypatch):
 
     results = fetch_jobs("Data Scientist", "Toronto")
 
-    assert results == [{"message": "No jobs found."}]
+    assert results == []
 
 
 def test_fetch_jobs_request_exception(monkeypatch):
@@ -112,12 +112,7 @@ def test_fetch_jobs_request_exception(monkeypatch):
 
     results = fetch_jobs("Data Scientist", "Toronto")
 
-    assert results == [
-        {
-            "message": "Job fetch failed",
-            "error": "timeout",
-        }
-    ]
+    assert results == []
 
 
 def test_fetch_jobs_invalid_json(monkeypatch):
@@ -140,9 +135,4 @@ def test_fetch_jobs_invalid_json(monkeypatch):
 
     results = fetch_jobs("Data Scientist", "Toronto")
 
-    assert results == [
-        {
-            "message": "Job fetch failed",
-            "error": "Invalid JSON response from jobs API.",
-        }
-    ]
+    assert results == []

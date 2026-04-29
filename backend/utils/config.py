@@ -11,24 +11,16 @@ JOBS_API_HOST = os.getenv("JOBS_API_HOST")
 BASE_DIR = Path("backend")
 DATA_DIR = BASE_DIR / "data"
 
-SAVED_JOBS_DIR = (
-    DATA_DIR / "jobs" / "saved"
-)  # directory to save jobs
-TEMP_JOBS_DIR = (
-    DATA_DIR / "jobs" / "temp"
-)  # temporary directory for fetched jobs
+SAVED_JOBS_DIR = DATA_DIR / "jobs" / "saved"  # directory to save jobs
+TEMP_JOBS_DIR = DATA_DIR / "jobs" / "temp"  # temporary directory for fetched jobs
 CUSTOMIZED_RESUMES_DIR = (
     DATA_DIR / "customized_resumes"
 )  # directory to save customized resumes
 CUSTOMIZED_RESUMES_PATH = (
     CUSTOMIZED_RESUMES_DIR / "customized_resume.md"
 )  # path to the customized resume
-CUSTOMIZED_RESUME_PDF_PATH = (
-    CUSTOMIZED_RESUMES_DIR / "customized_resume.pdf"
-)
-CUSTOMIZED_COVER_LETTER_PDF_PATH = (
-    CUSTOMIZED_RESUMES_DIR / "cover_letter.pdf"
-)
+CUSTOMIZED_RESUME_PDF_PATH = CUSTOMIZED_RESUMES_DIR / "customized_resume.pdf"
+CUSTOMIZED_COVER_LETTER_PDF_PATH = CUSTOMIZED_RESUMES_DIR / "cover_letter.pdf"
 CUSTOMIZED_MESSAGES_DIR = (
     DATA_DIR / "customized_messages"
 )  # directory to save customized messages
@@ -36,12 +28,8 @@ CUSTOMIZED_MESSAGES_PATH = (
     CUSTOMIZED_MESSAGES_DIR / "customized_message.txt"
 )  # path to the customized message
 JOBS_REPORTS_DIR = DATA_DIR / "reports"
-JOBS_REPORTS_PATH = (
-    JOBS_REPORTS_DIR / "report.md"
-)  # path to the jobs report
-RESUME_PATH = (
-    DATA_DIR / "resume" / "resume.pdf"
-)  # path to the resume
+JOBS_REPORTS_PATH = JOBS_REPORTS_DIR / "report.md"  # path to the jobs report
+RESUME_PATH = DATA_DIR / "resume" / "resume.pdf"  # path to the resume
 TEMP_FETCHED_JOBS_PATH = TEMP_JOBS_DIR / "temp_fetched_jobs.json"
 
 # create directories if they do not exists

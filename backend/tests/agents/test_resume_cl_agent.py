@@ -26,9 +26,7 @@ def fake_import_environment(tmp_path: Path, monkeypatch):
     crewai_pkg = cast(Any, types.ModuleType("crewai"))
 
     class Agent:
-        def __init__(
-            self, role, goal, backstory, llm, verbose=False
-        ):
+        def __init__(self, role, goal, backstory, llm, verbose=False):
             self.role = role
             self.goal = goal
             self.backstory = backstory
@@ -158,9 +156,7 @@ def test_create_resume_cl_task_expected_output_format():
     from backend.agents import resume_cl_agent
 
     fake_agent = object()
-    task = resume_cl_agent.create_resume_cl_task(
-        fake_agent, "Job", "Resume"
-    )
+    task = resume_cl_agent.create_resume_cl_task(fake_agent, "Job", "Resume")
 
     output = task.expected_output
     assert "structured markdown" in output.lower()
