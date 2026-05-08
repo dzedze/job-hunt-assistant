@@ -2,12 +2,12 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(Path(__file__).parent.parent / ".env")
 
 JOBS_API_KEY = os.getenv("JOBS_API_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 JOBS_API_HOST = os.getenv("JOBS_API_HOST")
-
+# print(OPENAI_API_KEY[:6])
 BASE_DIR = Path("backend")
 DATA_DIR = BASE_DIR / "data"
 
